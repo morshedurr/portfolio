@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin, Linkedin, Download, Settings, Landmark, FileText, 
 import { usePortfolio } from '../context/PortfolioContext';
 
 export const Footer = () => {
-  const { data, setIsAdminOpen } = usePortfolio();
+  const { data } = usePortfolio();
   const { profile } = data;
 
   const scrollTo = (id: string) => {
@@ -36,15 +36,7 @@ export const Footer = () => {
               Faculty member at Daffodil International University and Erasmus+ KA171 Fellow (Sweden). Dedicated to active-learning pedagogy, MIS enterprise architecture, and empirical business analytics research.
             </p>
 
-            <div className="pt-2">
-              <button
-                onClick={() => setIsAdminOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-900 border border-slate-700/80 hover:border-slate-500 text-xs text-amber-300 transition-colors"
-              >
-                <Settings size={12} />
-                <span>Admin Content Panel</span>
-              </button>
-            </div>
+
           </div>
 
           {/* Col 2: Academic Sections Navigation */}
@@ -122,8 +114,16 @@ export const Footer = () => {
           <div>
             © {new Date().getFullYear()} Morshedur Rahman Khan. All rights reserved.
           </div>
-          <div>
-            Faculty of Science & Information Technology • Daffodil International University
+          <div className="flex items-center gap-3">
+            <span>Faculty of Science & Information Technology • Daffodil International University</span>
+            <span className="text-slate-700">•</span>
+            <a
+              href="#admin"
+              className="text-slate-600 hover:text-slate-400 transition-colors"
+              title="Faculty Administration Console"
+            >
+              Faculty Portal
+            </a>
           </div>
         </div>
 

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
 
 export const Navbar = () => {
-  const { data, setIsAdminOpen } = usePortfolio();
+  const { data, isAdmin, goToAdmin } = usePortfolio();
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
@@ -73,13 +73,16 @@ export const Navbar = () => {
             <span>Faculty Profile</span>
             <ExternalLink size={10} />
           </a>
-          <button
-            onClick={() => setIsAdminOpen(true)}
-            className="text-amber-300 hover:text-amber-200 text-[11px] font-semibold flex items-center gap-1 transition-colors"
-          >
-            <Settings size={11} />
-            <span>Admin Edit</span>
-          </button>
+          {isAdmin && (
+            <button
+              onClick={goToAdmin}
+              className="px-2.5 py-1 rounded bg-indigo-600/90 hover:bg-indigo-600 text-white text-[11px] font-semibold flex items-center gap-1.5 transition-colors shadow-xs"
+              title="Open Admin Control Panel"
+            >
+              <Settings size={11} />
+              <span>Admin Panel</span>
+            </button>
+          )}
         </div>
       </div>
 

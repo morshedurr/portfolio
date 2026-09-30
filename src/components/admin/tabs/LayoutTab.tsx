@@ -4,16 +4,19 @@ import { SectionId } from '../../../types/portfolio';
 import { ArrowUp, ArrowDown, Eye, EyeOff, Download, Upload, RotateCcw, ShieldCheck } from 'lucide-react';
 
 const SECTION_LABELS: Record<SectionId, string> = {
-  hero: '1. Hero & Header',
-  about: '2. About Me & Academic Profile',
-  experience: '3. Work Experience',
-  awards: '4. Awards & Honours',
-  education: '5. Education & Certifications',
-  projects: '6. Projects & Solutions',
-  leadership: '7. Leadership & Events',
-  skills: '8. Skills & Competencies',
-  references: '9. Recommendations & References',
-  contact: '10. Contact & Message Form'
+  hero: '1. Academic Masthead (Hero)',
+  about: '2. Biography & Scholar Spotlight',
+  teaching: '3. Teaching & Course Instruction',
+  research: '4. Research & Scholarly Inquiries',
+  education: '5. Education & Degrees',
+  experience: '6. Work & Professional Experience',
+  awards: '7. Honours & Distinctions',
+  projects: '8. Applied Systems & Technical Projects',
+  leadership: '9. Leadership & Event Management',
+  skills: '10. Competencies & Languages',
+  certifications: '11. Professional Certifications',
+  references: '12. Academic References',
+  contact: '13. Contact & Office Inquiries'
 };
 
 export const LayoutTab: React.FC = () => {
