@@ -227,6 +227,7 @@ export const AdminPanel: React.FC = () => {
               </button>
             </div>
             </div>
+            </>
           )}
         </motion.div>
       </div>
