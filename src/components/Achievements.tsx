@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Award, Calendar, Building2, ArrowUp, ArrowDown, ExternalLink, Maximize2, X, Image as ImageIcon } from 'lucide-react';
+import { Trophy, ExternalLink, Maximize2, X, ArrowUp, ArrowDown } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { SectionEditOverlay } from './admin/SectionEditOverlay';
-import { AwardItem } from '../types/portfolio';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.06 },
+  }),
+};
 
 export const Achievements = () => {
   const { data, isAdmin, reorderItem } = usePortfolio();
@@ -21,41 +29,46 @@ export const Achievements = () => {
   });
 
   return (
-    <section id="awards" className="relative py-20 bg-white text-slate-800 border-t border-slate-200">
-      <SectionEditOverlay sectionTab="awards" label="Edit Honours & Photos" />
+    <section id="awards" className="relative py-24 bg-white border-t border-slate-200">
+      <SectionEditOverlay sectionTab="awards" label="Edit Honours & Awards" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Academic Section Header */}
-        <div className="mb-12 text-center sm:text-left border-b border-slate-200 pb-8">
-          <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-bold tracking-widest text-slate-500 uppercase font-sans mb-2">
-            <Trophy size={14} className="text-amber-700" />
-            <span>Honours, Fellowships & Competitions</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900 tracking-tight">
-            Honours, Awards & Achievements
-          </h2>
-          <p className="mt-3 text-base text-slate-600 max-w-3xl leading-relaxed">
-            Faculty awards for innovative pedagogy, European Commission fellowship in Sweden, national case competition championships, and technology olympiads.
-          </p>
-        </div>
 
-        {/* Filter Categories */}
-        <div className="flex flex-wrap gap-2 mb-10 pb-2">
+        {/* Section Header */}
+        <motion.div
+          className="mb-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Trophy size={16} className="text-[#B45309]" />
+            <p className="text-xs font-bold tracking-widest uppercase text-[#B45309] font-sans">
+              Honours & Fellowships
+            </p>
+          </div>
+          <h2 className="section-header text-3xl sm:text-4xl font-serif font-bold text-slate-900">
+            Awards & Achievements
+          </h2>
+        </motion.div>
+
+        {/* Filter tabs */}
+        <div className="flex flex-wrap gap-2 mb-10">
           {[
-            { id: 'all', label: 'All Honours' },
+            { id: 'all', label: 'All' },
             { id: 'teaching', label: 'Faculty & Teaching' },
             { id: 'fellowship', label: 'Fellowships & Grants' },
             { id: 'case', label: 'Case Championships' },
-            { id: 'tech', label: 'Tech Olympiads & Industry' }
+            { id: 'tech', label: 'Tech Olympiads' },
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveFilter(tab.id as any)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all ${
+              onClick={() => setActiveFilter(tab.id as typeof activeFilter)}
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all duration-150 ${
                 activeFilter === tab.id
-                  ? 'bg-[#0f1e36] text-white shadow-2xs'
-                  : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-[#1E3A8A] text-white shadow-sm'
+                  : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
               }`}
             >
               {tab.label}
@@ -63,92 +76,91 @@ export const Achievements = () => {
           ))}
         </div>
 
-        {/* Awards Portfolio Grid with Images */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+        {/* Awards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAwards.map((award, index) => (
             <motion.div
               key={award.id}
-              className="rounded-xl overflow-hidden border border-slate-200 bg-white shadow-2xs hover:border-slate-400 transition-all duration-200 flex flex-col justify-between group"
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              className="rounded-xl overflow-hidden border border-slate-200 bg-white flex flex-col group hover:-translate-y-0.5 transition-all duration-200"
+              style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04)' }}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
+              variants={fadeUp}
+              custom={index}
             >
-              <div>
-                {/* Photo / Certificate Banner */}
-                {award.imageUrl ? (
-                  <div className="relative h-48 w-full overflow-hidden bg-slate-100 border-b border-slate-200">
-                    <img
-                      src={award.imageUrl}
-                      alt={award.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent"></div>
-                    
-                    {/* Category pill on image */}
-                    <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-white/95 text-slate-900 shadow-xs backdrop-blur-xs">
-                        {award.category}
-                      </span>
-                    </div>
+              {/* Image or placeholder */}
+              {award.imageUrl ? (
+                <div className="relative h-48 w-full overflow-hidden bg-slate-100 border-b border-slate-200">
+                  <img
+                    src={award.imageUrl}
+                    alt={award.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
 
-                    {/* Expand Photo Button */}
-                    <button
-                      onClick={() => setSelectedPhoto({ title: award.title, imageUrl: award.imageUrl!, org: award.organization })}
-                      className="absolute top-3 right-3 p-1.5 rounded-md bg-black/60 hover:bg-black/80 text-white transition-colors"
-                      title="View Certificate / Image"
-                    >
-                      <Maximize2 size={13} />
-                    </button>
-
-                    <div className="absolute bottom-2.5 left-3 right-3 text-white">
-                      <div className="text-[11px] font-mono opacity-90">{award.date}</div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-4 bg-[#faf9f6] border-b border-slate-200/80 flex items-center justify-between">
-                    <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-900 border border-amber-200">
-                      {award.category || 'Honour'}
-                    </span>
-                    <span className="font-mono text-xs text-slate-500">
-                      {award.date}
+                  {/* Category pill */}
+                  <div className="absolute top-3 left-3">
+                    <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-white/95 text-slate-900 shadow-sm">
+                      {award.category}
                     </span>
                   </div>
+
+                  {/* Expand button */}
+                  <button
+                    onClick={() => setSelectedPhoto({ title: award.title, imageUrl: award.imageUrl!, org: award.organization })}
+                    className="absolute top-3 right-3 p-1.5 rounded-md bg-black/60 hover:bg-black/80 text-white transition-colors"
+                  >
+                    <Maximize2 size={13} />
+                  </button>
+
+                  <div className="absolute bottom-2.5 left-3 text-white text-[11px] font-mono opacity-90">
+                    {award.date}
+                  </div>
+                </div>
+              ) : (
+                <div className="p-4 bg-gradient-to-br from-[#1E3A8A]/5 to-[#B45309]/5 border-b border-slate-200/80 flex items-center justify-between">
+                  <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-[#B45309] border border-amber-200">
+                    {award.category || 'Honour'}
+                  </span>
+                  <span className="font-mono text-xs text-slate-500">{award.date}</span>
+                </div>
+              )}
+
+              {/* Content */}
+              <div className="p-5 flex-1 flex flex-col">
+                {/* Organization badge */}
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#B45309]/10 text-[#B45309] border border-[#B45309]/20 w-fit mb-3">
+                  {award.organization}
+                </span>
+
+                <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 leading-snug mb-2">
+                  {award.title}
+                </h3>
+
+                {!award.imageUrl && (
+                  <p className="text-xs text-slate-500 font-mono mb-2">{award.date}</p>
                 )}
 
-                {/* Content Body */}
-                <div className="p-5 sm:p-6">
-                  <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 leading-snug mb-1">
-                    {award.title}
-                  </h3>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed flex-1">
+                  {award.description}
+                </p>
 
-                  <div className="text-xs font-semibold text-academic-blue mb-3 flex items-center gap-1.5">
-                    <Building2 size={13} className="text-slate-400 flex-shrink-0" />
-                    <span>{award.organization}</span>
+                {award.credentialUrl && (
+                  <div className="mt-4 pt-3 border-t border-slate-100">
+                    <a
+                      href={award.credentialUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E3A8A] hover:underline"
+                    >
+                      <span>View Certificate</span>
+                      <ExternalLink size={12} />
+                    </a>
                   </div>
-
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
-                    {award.description}
-                  </p>
-
-                  {/* Verification / Daily Star Article Link */}
-                  {award.credentialUrl && (
-                    <div className="pt-2">
-                      <a
-                        href={award.credentialUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-academic-blue hover:underline"
-                      >
-                        <span>Read Feature / Credential</span>
-                        <ExternalLink size={12} />
-                      </a>
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
 
-              {/* Rearrange controls in Admin Mode */}
               {isAdmin && (
                 <div className="px-5 py-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 bg-slate-50/50">
                   <span>Priority: #{award.order || index + 1}</span>
@@ -157,7 +169,6 @@ export const Achievements = () => {
                       onClick={() => reorderItem('awards', award.id, 'up')}
                       disabled={index === 0}
                       className="p-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
-                      title="Move Up"
                     >
                       <ArrowUp size={12} />
                     </button>
@@ -165,7 +176,6 @@ export const Achievements = () => {
                       onClick={() => reorderItem('awards', award.id, 'down')}
                       disabled={index === filteredAwards.length - 1}
                       className="p-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
-                      title="Move Down"
                     >
                       <ArrowDown size={12} />
                     </button>
@@ -175,10 +185,9 @@ export const Achievements = () => {
             </motion.div>
           ))}
         </div>
-
       </div>
 
-      {/* Lightbox Modal for Certificate / Achievement Photo */}
+      {/* Lightbox Modal */}
       <AnimatePresence>
         {selectedPhoto && (
           <motion.div
@@ -189,7 +198,7 @@ export const Achievements = () => {
             onClick={() => setSelectedPhoto(null)}
           >
             <motion.div
-              className="bg-white rounded-2xl overflow-hidden max-w-3xl w-full shadow-2xl border border-slate-700"
+              className="bg-white rounded-2xl overflow-hidden max-w-3xl w-full shadow-2xl"
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
@@ -200,9 +209,7 @@ export const Achievements = () => {
                   <h4 className="font-serif font-bold text-slate-900 text-sm sm:text-base leading-tight">
                     {selectedPhoto.title}
                   </h4>
-                  <div className="text-xs text-academic-blue font-medium">
-                    {selectedPhoto.org}
-                  </div>
+                  <div className="text-xs text-[#1E3A8A] font-medium">{selectedPhoto.org}</div>
                 </div>
                 <button
                   onClick={() => setSelectedPhoto(null)}
@@ -211,7 +218,6 @@ export const Achievements = () => {
                   <X size={18} />
                 </button>
               </div>
-
               <div className="max-h-[75vh] overflow-hidden bg-slate-950 flex items-center justify-center p-2">
                 <img
                   src={selectedPhoto.imageUrl}

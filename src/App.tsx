@@ -43,7 +43,7 @@ const PortfolioContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfbf9] text-slate-800 relative selection:bg-slate-800 selection:text-white font-sans">
+    <div className="min-h-screen bg-cream text-slate-800 relative font-sans">
       {/* Sticky Top Institutional Navbar */}
       <Navbar />
 

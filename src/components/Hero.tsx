@@ -1,202 +1,230 @@
-import React from 'react';
-import { Mail, Phone, MapPin, Linkedin, Download, FileText, Award, GraduationCap, BookOpen, ExternalLink, ShieldCheck, Landmark } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { Mail, Linkedin, FileText, Download, ChevronDown, MapPin } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
 import { SectionEditOverlay } from './admin/SectionEditOverlay';
 
 export const Hero = () => {
   const { data } = usePortfolio();
   const { profile } = data;
+  const [titleIndex, setTitleIndex] = useState(0);
+
+  useEffect(() => {
+    if (!profile.titles || profile.titles.length <= 1) return;
+    const interval = setInterval(() => {
+      setTitleIndex((prev) => (prev + 1) % profile.titles.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [profile.titles]);
+
+  const scrollDown = () => {
+    const about = document.getElementById('about');
+    if (about) about.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <section id="home" className="relative pt-32 pb-16 bg-[#fcfbf9] text-slate-800 border-b border-slate-200">
+    <section
+      id="home"
+      className="relative min-h-screen flex flex-col justify-center pt-20 pb-16 overflow-hidden"
+      style={{ backgroundColor: '#FAFAF8' }}
+    >
+      {/* Dot pattern background */}
+      <div
+        className="absolute inset-0 opacity-50 pointer-events-none"
+        style={{
+          backgroundImage: 'radial-gradient(circle, #cbd5e1 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
+        }}
+      />
+
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 80% 60% at 70% 50%, rgba(255,255,255,0.6) 0%, transparent 100%)',
+        }}
+      />
+
       <SectionEditOverlay sectionTab="profile" label="Edit Faculty Masthead" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Main Faculty Header Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          
-          {/* Left Column: Academic Portrait & Quick Institutional Info */}
-          <div className="lg:col-span-4 flex flex-col items-center lg:items-start">
-            <div className="relative w-60 sm:w-64 rounded-lg overflow-hidden bg-white border border-slate-300 p-1.5 shadow-sm">
-              <div className="overflow-hidden rounded-md aspect-[4/5] bg-slate-100">
-                <img
-                  src={profile.profileImage || '/profile-placeholder.png'}
-                  alt={profile.name}
-                  className="w-full h-full object-cover object-top"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/profile-placeholder.png';
-                  }}
-                />
-              </div>
-              <div className="pt-3 pb-1 text-center">
-                <div className="text-xs font-semibold text-slate-900">Morshedur Rahman Khan</div>
-                <div className="text-[11px] text-slate-500">Lecturer, Dept. of ITM</div>
-                <div className="text-[11px] text-slate-500">Daffodil International University</div>
-              </div>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+          {/* Left Column: Text Content */}
+          <motion.div
+            className="space-y-6 order-2 lg:order-1"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Pre-title badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-[#1E3A8A] text-xs font-semibold tracking-wide">
+              <MapPin size={12} />
+              <span>Daffodil International University · Bangladesh</span>
             </div>
 
-            {/* Quick Contact & Office Box */}
-            <div className="w-full max-w-sm mt-5 bg-white rounded-lg border border-slate-200 p-4 shadow-2xs text-xs space-y-2.5 font-sans">
-              <div className="font-serif font-bold text-slate-900 border-b border-slate-100 pb-1.5 flex items-center gap-1.5">
-                <Landmark size={13} className="text-academic-blue" />
-                <span>Departmental Office</span>
-              </div>
-              
-              <div className="flex items-start gap-2 text-slate-600">
-                <MapPin size={13} className="text-slate-400 mt-0.5 flex-shrink-0" />
-                <span className="leading-snug">{profile.location}</span>
-              </div>
+            {/* Name */}
+            <h1 className="font-serif font-bold tracking-tight text-slate-900 leading-tight"
+              style={{ fontSize: 'clamp(2.2rem, 5vw, 3.5rem)' }}
+            >
+              {profile.name}
+            </h1>
 
-              <div className="flex items-center gap-2 text-slate-600">
-                <Mail size={13} className="text-slate-400 flex-shrink-0" />
-                <a href={`mailto:${profile.email}`} className="text-academic-blue hover:underline truncate">
-                  {profile.email}
-                </a>
-              </div>
-
-              <div className="flex items-center gap-2 text-slate-600">
-                <Phone size={13} className="text-slate-400 flex-shrink-0" />
-                <span>{profile.phone}</span>
-              </div>
-
-              <div className="flex items-center gap-2 text-slate-600 pt-1 border-t border-slate-100">
-                <Linkedin size={13} className="text-slate-400 flex-shrink-0" />
-                <a 
-                  href={profile.linkedin} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="text-academic-blue hover:underline"
+            {/* Animated Rotating Titles */}
+            <div className="h-8 overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={titleIndex}
+                  className="text-lg font-medium text-[#B45309]"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.35 }}
                 >
-                  linkedin.com/in/morshedur-rahman
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Full Academic Faculty Presentation */}
-          <div className="lg:col-span-8 space-y-6 text-left">
-            
-            {/* Academic Title Block */}
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-blue-50 border border-blue-200/80 text-academic-blue text-xs font-semibold tracking-wide font-sans">
-                <span>Faculty Profile • Information Technology & Management</span>
-              </div>
-
-              <h1 className="text-3xl sm:text-5xl font-serif font-bold text-slate-900 tracking-tight leading-tight">
-                {profile.name}
-              </h1>
-
-              <div className="text-base sm:text-lg text-slate-700 font-serif space-y-1">
-                <p className="font-semibold text-slate-800">
-                  Lecturer, Department of Information Technology & Management (ITM)
-                </p>
-                <p className="text-slate-600 text-sm sm:text-base">
-                  Daffodil International University (DIU) • Dhaka, Bangladesh
-                </p>
-                <p className="text-slate-500 text-xs sm:text-sm">
-                  Erasmus+ KA171 Fellow, Mälardalen University (Sweden) • AWS Certified Solutions Architect
-                </p>
-              </div>
+                  {profile.titles?.[titleIndex] ?? 'Lecturer'}
+                </motion.p>
+              </AnimatePresence>
             </div>
 
-            {/* Academic Bio / Research Statement */}
-            <div className="prose prose-slate max-w-none text-sm sm:text-base text-slate-700 leading-relaxed space-y-3 font-sans">
-              <p>
-                {profile.bio}
+            {/* Bio */}
+            <p className="text-base text-slate-600 leading-relaxed max-w-lg">
+              {profile.bio}
+            </p>
+            {profile.subBio && (
+              <p className="text-sm text-slate-500 leading-relaxed max-w-lg">
+                {profile.subBio}
               </p>
-              {profile.subBio && (
-                <p className="text-slate-600 text-sm">
-                  {profile.subBio}
-                </p>
-              )}
-            </div>
+            )}
 
-            {/* Academic Action Buttons */}
+            {/* CTA Buttons */}
             <div className="flex flex-wrap gap-3 pt-2">
               <a
                 href={profile.resumeUrl}
                 download
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-[#0f1e36] text-white text-xs sm:text-sm font-semibold hover:bg-[#1e3a8a] transition-colors shadow-xs"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#1E3A8A] text-white text-sm font-semibold hover:bg-[#1E40AF] transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5"
               >
                 <FileText size={15} />
-                <span>Curriculum Vitae (PDF)</span>
+                <span>View CV</span>
                 <Download size={13} className="opacity-70" />
               </a>
 
               <a
-                href="#teaching"
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-md bg-white border border-slate-300 text-slate-800 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-colors shadow-2xs"
-              >
-                <BookOpen size={14} className="text-academic-blue" />
-                <span>Courses & Teaching</span>
-              </a>
-
-              <a
-                href="#research"
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-md bg-white border border-slate-300 text-slate-800 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-colors shadow-2xs"
-              >
-                <span>Research Inquiries</span>
-              </a>
-
-              <a
                 href="#contact"
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-md bg-white border border-slate-300 text-slate-800 text-xs sm:text-sm font-medium hover:bg-slate-50 transition-colors shadow-2xs"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border-2 border-[#1E3A8A] text-[#1E3A8A] text-sm font-semibold hover:bg-[#1E3A8A] hover:text-white transition-all duration-200 hover:-translate-y-0.5"
               >
-                <Mail size={14} className="text-slate-500" />
-                <span>Contact Office</span>
+                <Mail size={15} />
+                <span>Get in Touch</span>
               </a>
             </div>
 
-            {/* Key Academic Credentials / Distinction Bar */}
-            <div className="pt-6 border-t border-slate-200">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                
-                <div className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-2 text-academic-blue mb-1">
-                    <GraduationCap size={16} />
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-sans">Undergraduate</span>
+            {/* Social Links */}
+            <div className="flex items-center gap-4 pt-1">
+              <a
+                href={profile.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 text-sm text-slate-500 hover:text-[#1E3A8A] transition-colors"
+              >
+                <Linkedin size={18} />
+                <span>LinkedIn</span>
+              </a>
+              <span className="text-slate-300">·</span>
+              <a
+                href={`mailto:${profile.email}`}
+                className="flex items-center gap-2 text-sm text-slate-500 hover:text-[#1E3A8A] transition-colors"
+              >
+                <Mail size={18} />
+                <span>Email</span>
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Right Column: Profile Image Card */}
+          <motion.div
+            className="flex justify-center lg:justify-end order-1 lg:order-2"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+          >
+            <div className="relative">
+              {/* Gold ring / accent */}
+              <div
+                className="absolute -inset-2 rounded-2xl opacity-30"
+                style={{
+                  background: 'linear-gradient(135deg, #B45309 0%, #1E3A8A 100%)',
+                  borderRadius: '1.25rem',
+                }}
+              />
+
+              {/* Glass card */}
+              <div
+                className="relative rounded-2xl overflow-hidden border border-white/60 shadow-xl"
+                style={{
+                  background: 'rgba(255,255,255,0.85)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  boxShadow: '0 20px 60px rgba(30,58,138,0.15), 0 4px 16px rgba(0,0,0,0.08)',
+                }}
+              >
+                {/* Profile image */}
+                <div className="w-72 sm:w-80 aspect-[4/5] bg-slate-100 relative overflow-hidden">
+                  {profile.profileImage ? (
+                    <img
+                      src={profile.profileImage}
+                      alt={profile.name}
+                      className="w-full h-full object-cover object-top"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-[#1E3A8A]/10">
+                      <span className="text-6xl font-serif font-bold text-[#1E3A8A] opacity-40">MRK</span>
+                    </div>
+                  )}
+
+                  {/* Erasmus+ floating badge */}
+                  <div className="absolute top-4 right-4">
+                    <div
+                      className="px-3 py-1.5 rounded-lg text-[11px] font-bold text-white shadow-lg"
+                      style={{ background: 'linear-gradient(135deg, #B45309, #D97706)' }}
+                    >
+                      Erasmus+ Scholar
+                    </div>
                   </div>
-                  <div className="text-sm font-bold text-slate-900">CGPA 3.90 / 4.00</div>
-                  <div className="text-[11px] text-slate-500">Ranked 4th • Dean's Honour List</div>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-2 text-amber-700 mb-1">
-                    <Award size={16} />
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-sans">Fellowship</span>
-                  </div>
-                  <div className="text-sm font-bold text-slate-900">Erasmus+ KA171</div>
-                  <div className="text-[11px] text-slate-500">Mälardalen University, Sweden</div>
+                {/* Card footer */}
+                <div className="px-5 py-4 border-t border-slate-100 bg-white/50">
+                  <div className="text-sm font-serif font-bold text-slate-900">{profile.name}</div>
+                  <div className="text-xs text-slate-500 mt-0.5">Lecturer, Dept. of ITM</div>
                 </div>
-
-                <div className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-2 text-emerald-700 mb-1">
-                    <BookOpen size={16} />
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-sans">Teaching</span>
-                  </div>
-                  <div className="text-sm font-bold text-slate-900">4 Core Courses</div>
-                  <div className="text-[11px] text-slate-500">MIS, HRM, Mgmt, Operations</div>
-                </div>
-
-                <div className="p-3.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-2 text-indigo-700 mb-1">
-                    <ShieldCheck size={16} />
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-sans">Certification</span>
-                  </div>
-                  <div className="text-sm font-bold text-slate-900">AWS Certified</div>
-                  <div className="text-[11px] text-slate-500">Solutions Architect – Associate</div>
-                </div>
-
               </div>
             </div>
-
-          </div>
+          </motion.div>
 
         </div>
-
       </div>
+
+      {/* Scroll Down Indicator */}
+      <motion.button
+        onClick={scrollDown}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-slate-400 hover:text-[#1E3A8A] transition-colors"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+      >
+        <span className="text-xs font-medium tracking-widest uppercase">Scroll</span>
+        <motion.div
+          animate={{ y: [0, 5, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+        >
+          <ChevronDown size={20} />
+        </motion.div>
+      </motion.button>
     </section>
   );
 };

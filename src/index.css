@@ -1,96 +1,134 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* =====================
+   CSS Custom Properties
+   ===================== */
+:root {
+  --color-navy: #1E3A8A;
+  --color-navy-dark: #1E40AF;
+  --color-gold: #B45309;
+  --color-gold-light: #D97706;
+  --color-cream: #FAFAF8;
+  --color-surface: #FFFFFF;
+  --color-text: #0F172A;
+  --color-muted: #64748B;
+  --color-border: #E2E8F0;
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.12), 0 8px 32px rgba(0,0,0,0.08);
+  --shadow-glass: 0 8px 32px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+}
+
+/* =====================
+   Base Styles
+   ===================== */
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #fdfcfb;
-  background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0.03) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0.03) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,0.03) 0, transparent 50%);
-  color: #1a1a2e;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--color-cream);
+  color: var(--color-text);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Premium headings */
-h1, h2, h3, .font-serif {
+h1, h2, h3, h4, h5, h6 {
   font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  letter-spacing: -0.02em;
 }
 
-.font-sans, .font-body {
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-  letter-spacing: -0.01em;
+/* Selection colors */
+::selection {
+  background-color: var(--color-navy);
+  color: white;
 }
 
-/* Gradient text utility */
-.gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+::-moz-selection {
+  background-color: var(--color-navy);
+  color: white;
 }
 
-.gradient-text-warm {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-navy);
+  outline-offset: 2px;
 }
 
-/* Glass morphism card */
-.glass-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+/* =====================
+   Utility Classes
+   ===================== */
+
+/* Section header with gold accent */
+.section-header {
+  position: relative;
+  display: inline-block;
 }
 
-.glass-card-dark {
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+.section-header::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: var(--color-gold);
+  border-radius: 999px;
+  margin-top: 8px;
 }
 
-/* Animated gradient background */
-.animated-gradient {
-  background: linear-gradient(-45deg, #0f172a, #1e293b, #1e3a5f, #0f172a);
-  background-size: 400% 400%;
-  animation: gradient-shift 15s ease infinite;
+/* Badge chip */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.025em;
 }
 
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.badge-navy {
+  background-color: rgba(30, 58, 138, 0.1);
+  color: var(--color-navy);
+  border: 1px solid rgba(30, 58, 138, 0.2);
 }
 
-/* Glow effect */
-.glow {
-  box-shadow: 0 0 40px rgba(99, 102, 241, 0.15);
+.badge-gold {
+  background-color: rgba(180, 83, 9, 0.1);
+  color: var(--color-gold);
+  border: 1px solid rgba(180, 83, 9, 0.2);
 }
 
-.glow-hover:hover {
-  box-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
+/* Card */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-card);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
   transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
 }
 
-/* Smooth card hover */
-.card-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* Glass morphism */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-}
-
-/* Shake animation for login error */
+/* =====================
+   Animations
+   ===================== */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
@@ -101,7 +139,6 @@ h1, h2, h3, .font-serif {
   animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
-/* Floating animation */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
@@ -111,7 +148,6 @@ h1, h2, h3, .font-serif {
   animation: float 6s ease-in-out infinite;
 }
 
-/* Subtle pulse */
 @keyframes subtle-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
@@ -121,7 +157,9 @@ h1, h2, h3, .font-serif {
   animation: subtle-pulse 3s ease-in-out infinite;
 }
 
-/* Premium scrollbar */
+/* =====================
+   Scrollbar Styling
+   ===================== */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -132,39 +170,28 @@ h1, h2, h3, .font-serif {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--color-border);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--color-muted);
 }
 
-/* Section divider decoration */
-.section-line::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #6366f1, #8b5cf6);
-  border-radius: 999px;
-  margin-top: 12px;
-}
-
-/* Responsive adjustments */
+/* =====================
+   Responsive Adjustments
+   ===================== */
 @media (max-width: 640px) {
-  h1, h2, h3, h4, h5, h6 {
-    hyphens: auto;
-  }
-  
-  p {
+  h1, h2, h3, h4, h5, h6, p {
     hyphens: auto;
   }
 }
 
-/* Print styles */
+/* =====================
+   Print Styles
+   ===================== */
 @media print {
-  .print\\:hidden {
+  .print\:hidden {
     display: none !important;
   }
 }

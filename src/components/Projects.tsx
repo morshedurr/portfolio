@@ -1,8 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Code, ExternalLink, ArrowUp, ArrowDown, Cpu, Layers } from 'lucide-react';
+import { ExternalLink, Github, ArrowUp, ArrowDown, Star } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { SectionEditOverlay } from './admin/SectionEditOverlay';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.08 },
+  }),
+};
 
 export const Projects = () => {
   const { data, isAdmin, reorderItem } = usePortfolio();
@@ -10,88 +19,132 @@ export const Projects = () => {
   const sortedProjects = [...data.projects].sort((a, b) => (a.order || 0) - (b.order || 0));
 
   return (
-    <section id="projects" className="relative py-20 bg-[#faf9f6] text-slate-800 border-t border-slate-200">
-      <SectionEditOverlay sectionTab="projects" label="Edit Applied Systems & Projects" />
+    <section id="projects" className="relative py-24 bg-[#FAFAF8] border-t border-slate-200">
+      <SectionEditOverlay sectionTab="projects" label="Edit Projects" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Academic Section Header */}
-        <div className="mb-14 text-center sm:text-left border-b border-slate-200 pb-8">
-          <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-bold tracking-widest text-slate-500 uppercase font-sans mb-2">
-            <Cpu size={14} className="text-academic-blue" />
-            <span>Applied Systems & Technological Prototypes</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900 tracking-tight">
-            Applied Systems & Case Studies
-          </h2>
-          <p className="mt-3 text-base text-slate-600 max-w-3xl leading-relaxed">
-            Practical computing systems, sustainability analytics web architectures, and digital supply chain optimization frameworks.
+
+        {/* Section Header */}
+        <motion.div
+          className="mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+        >
+          <p className="text-xs font-bold tracking-widest uppercase text-[#1E3A8A] font-sans mb-3">
+            Applied Systems
           </p>
-        </div>
+          <h2 className="section-header text-3xl sm:text-4xl font-serif font-bold text-slate-900">
+            Projects
+          </h2>
+        </motion.div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedProjects.map((proj, index) => (
             <motion.div
               key={proj.id}
-              className="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-2xs hover:border-slate-400 transition-all duration-200 flex flex-col justify-between"
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              className="relative rounded-xl overflow-hidden bg-white border border-slate-200 flex flex-col group hover:-translate-y-0.5 transition-all duration-200"
+              style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04)' }}
+              initial="hidden"
+              whileInView="visible"
               viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: index * 0.08 }}
+              variants={fadeUp}
+              custom={index}
             >
-              <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-50 text-academic-blue border border-blue-200">
-                      {proj.role}
-                    </span>
-                    {proj.featured && (
-                      <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">
-                        Featured Framework
-                      </span>
-                    )}
-                  </div>
+              {/* Featured banner */}
+              {proj.featured && (
+                <div className="absolute top-3 right-3 z-10">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#B45309] text-white shadow-sm">
+                    <Star size={10} />
+                    Featured
+                  </span>
+                </div>
+              )}
 
-                  <h3 className="text-xl font-serif font-bold text-slate-900 mb-2 leading-snug">
-                    {proj.title}
-                  </h3>
+              {/* Image or gradient placeholder */}
+              {proj.imageUrl ? (
+                <div className="h-44 overflow-hidden bg-slate-100">
+                  <img
+                    src={proj.imageUrl}
+                    alt={proj.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              ) : (
+                <div
+                  className="h-44 flex items-center justify-center"
+                  style={{
+                    background: `linear-gradient(135deg, ${
+                      index % 3 === 0 ? '#1E3A8A15, #1E3A8A30' :
+                      index % 3 === 1 ? '#B4530915, #B4530930' :
+                      '#05966915, #05966930'
+                    })`,
+                  }}
+                >
+                  <span className="text-4xl font-serif font-bold opacity-20 text-slate-700">
+                    {proj.title.charAt(0)}
+                  </span>
+                </div>
+              )}
 
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5">
-                    {proj.description}
-                  </p>
-
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1.5 mb-6">
-                    {proj.tags.map((tag, tIdx) => (
-                      <span
-                        key={tIdx}
-                        className="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 text-slate-700 border border-slate-200"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+              {/* Content */}
+              <div className="p-5 flex-1 flex flex-col">
+                {/* Role badge */}
+                <div className="mb-3">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-[#1E3A8A] border border-blue-200">
+                    {proj.role}
+                  </span>
                 </div>
 
-                {/* Actions */}
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
-                  <div>
-                    {proj.demoUrl && (
-                      <a
-                        href={proj.demoUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-academic-blue hover:underline"
-                      >
-                        <span>Live Architecture Deployment</span>
-                        <ExternalLink size={12} />
-                      </a>
-                    )}
-                  </div>
+                <h3 className="text-lg font-serif font-bold text-slate-900 mb-2 leading-snug">
+                  {proj.title}
+                </h3>
+
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 flex-1">
+                  {proj.description}
+                </p>
+
+                {/* Tech tags */}
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {proj.tags.map((tag, tIdx) => (
+                    <span
+                      key={tIdx}
+                      className="px-2 py-0.5 rounded text-xs font-mono bg-slate-100 text-slate-700 border border-slate-200"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Links */}
+                <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+                  {proj.demoUrl && (
+                    <a
+                      href={proj.demoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E3A8A] hover:underline"
+                    >
+                      <ExternalLink size={12} />
+                      <span>Live Demo</span>
+                    </a>
+                  )}
+                  {proj.githubUrl && (
+                    <a
+                      href={proj.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:underline"
+                    >
+                      <Github size={12} />
+                      <span>Source</span>
+                    </a>
+                  )}
 
                   {isAdmin && (
-                    <div className="flex items-center gap-1">
+                    <div className="ml-auto flex items-center gap-1">
                       <button
                         onClick={() => reorderItem('projects', proj.id, 'up')}
                         disabled={index === 0}
